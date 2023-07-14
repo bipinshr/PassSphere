@@ -1,19 +1,17 @@
 import React from "react";
 import "../../App.css";
 import Navbar from "../Navbar";
+import SignupForm from "../SignupForm";
 // import Main from "../Main";
 
-function Login() {
+function Signup() {
   return (
     <div>
-      {/* {console.log("Hello")} */}
       <Navbar />
-      <form>
-        <button>ok</button>
-      </form>
-      <h2>Hello</h2>
+      <SignupForm />
+      <h2>Signup page</h2>
     </div>
   );
 }
 
-export default Login;
+export default Signup;
