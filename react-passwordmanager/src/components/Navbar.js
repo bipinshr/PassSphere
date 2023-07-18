@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "./Button";
-import { Link } from "react-router-dom";
-import "./Navbar.css";
+import React, { useState, useEffect } from 'react';
+import { Button } from './Button';
+import { Link} from 'react-router-dom';
+import './Navbar.css';
+import './loginform.css';
+import LoginForm from './loginform';
+import Home from './pages/Home';
 
 function Navbar() {
   const [click, setClick] = useState(false);
@@ -9,6 +12,21 @@ function Navbar() {
 
   const handleClick = () => setClick(!click);
   const closeMobileMenu = () => setClick(false);
+
+  const [showLoginForm, setShowLoginForm] = useState(false);
+
+  const handleLoginClick = () => {
+    if (handleLoginClick)
+    {
+    setShowLoginForm(true);
+    }
+    else 
+    {
+      setShowLoginForm(false);
+    }
+    // Additional logic if needed
+  };
+
 
   const showButton = () => {
     if (window.innerWidth <= 960) {
@@ -50,6 +68,17 @@ function Navbar() {
               </Link>
             </li>
 
+            <li className='nav-item' >
+            <Link
+              to='/loginform'
+              className='nav-links'
+              onClick={() => {
+                handleLoginClick(); 
+              }}
+            > 
+              Login
+            </Link>
+          </li>
             <li>
               <Link to="/sign-up" className="nav-links-mobile" onClick={closeMobileMenu}>
                 Sign Up
@@ -59,6 +88,7 @@ function Navbar() {
           {button && <Button buttonStyle="btn--outline">SIGN UP</Button>}
         </div>
       </nav>
+      {showLoginForm ? <LoginForm/> :<Home/>} 
     </>
   );
 }
