@@ -1,16 +1,17 @@
 import React from "react";
 import "../../App.css";
 import Navbar from "../Navbar";
-import LoginForm from "../LoginForm";
+import PasswordVault from "../PasswordVault";
+
 // import Main from "../Main";
 
-function Login() {
+function PasswordPage() {
   return (
     <div>
       <Navbar />
-      <LoginForm />
+      <PasswordVault />
     </div>
   );
 }
 
-export default Login;
+export default PasswordPage;

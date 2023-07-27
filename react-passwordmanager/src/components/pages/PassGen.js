@@ -19,7 +19,7 @@ function PassGen() {
       })
         .then((response) => response.json())
         .then((data) => {
-          const password = data.random_password; // Extract the password from the response object
+          const password = data.random_password; //get the password object form api
           setGeneratedPassword(password || ""); // Set an empty string if password is undefined
           // console.log(password);
         })
@@ -70,7 +70,7 @@ function PassGen() {
               required
             />
 
-            <input type="submit" value="Generate Password" />
+            <input className="generateBtn" type="submit" value="Generate Password" />
           </form>
           <h2>Generated Password: </h2>
           <div>

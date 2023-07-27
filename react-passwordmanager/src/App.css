@@ -53,11 +53,15 @@ img {
   font-family: "Architects Daughter", cursive;
   text-align: center;
   font-size: 130%;
-  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
   background-color: #008c41;
   background-image: url("https://www.transparenttextures.com/patterns/brushed-alum.png");
   /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
 }
+
+/* .genContainer h1 {
+  font-family: "PT Sans", sans-serif;
+} */
 .container {
   text-align: center;
   width: 100%;
@@ -74,8 +78,8 @@ img {
   box-sizing: border-box;
 }
 
-.container >h1 {
-  color:black;
+.container > h1 {
+  color: black;
   margin-top: 10px;
   justify-content: center;
   align-items: center;
@@ -93,4 +97,16 @@ img {
 
 .numberInput {
   text-align: center;
+}
+
+.generateBtn {
+  margin: 5%;
+  background-color: rgb(247, 120, 1);
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
 }

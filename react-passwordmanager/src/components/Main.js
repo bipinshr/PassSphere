@@ -3,8 +3,8 @@ import "../App.css";
 //import { Button } from "./Button";
 import "./Main.css";
 import Navbar from "./Navbar";
-import CardItem from './CardItem';
-import './Card.css';
+import CardItem from "./CardItem";
+import "./Card.css";
 
 import { Link } from "react-router-dom";
 
@@ -17,7 +17,10 @@ function Main() {
       <div className="main-btns">
         <Link to="/passGen">PassGen</Link>
       </div>
-      <div className='cards'>
+      <div className="main-btns">
+        <Link to="/page">page</Link>
+      </div>
+      <div className="cards">
         <h1>Why PassSphere?</h1>
         <div className="cards_container">
           <div className="cards_wrapper">
@@ -25,8 +28,8 @@ function Main() {
               <CardItem
                 src="images/dollar.jpeg"
                 text="Cheapest Password Manager available"
-                label='Plans starting from only $9.99/year'
-                path='/sign-up'
+                label="Plans starting from only $9.99/year"
+                path="/sign-up"
                 info={
                   <ul>
                     <li>Store a maximum of first 10 account passwords for free</li>
@@ -39,8 +42,8 @@ function Main() {
               <CardItem
                 src="images/Encrypt.jpeg"
                 text="Password stored in an encrypted format"
-                label='AES-256 bit Encryption algorithm'
-                path='/sign-up'
+                label="AES-256 bit Encryption algorithm"
+                path="/sign-up"
                 info={
                   <ul>
                     <li>Never worry about yout account security</li>
@@ -53,8 +56,8 @@ function Main() {
               <CardItem
                 src="images/gen.jpeg"
                 text="Built in password generator"
-                label='PassGen'
-                path='/sign-up'
+                label="PassGen"
+                path="/sign-up"
                 info={
                   <ul>
                     <li>Randomly generate a unique password for your new accounts</li>
@@ -65,8 +68,8 @@ function Main() {
               <CardItem
                 src="images/auto.jpeg"
                 text="Autofill passwords using Chrome extensions"
-                label='Autofill'
-                path='/sign-up'
+                label="Autofill"
+                path="/sign-up"
                 info={
                   <ul>
                     <li>Add a Chrome extension to enable password autofill</li>
