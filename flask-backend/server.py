@@ -1,21 +1,22 @@
 from flask import Flask, request, jsonify
 import pyodbc
 import os
+import dotenv
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Protocol.KDF import PBKDF2
 from argon2 import PasswordHasher
 
+dotenv.load_dotenv()
 app = Flask(__name__)
+ph = PasswordHasher()
 
 server = os.getenv('SERVER')
 database = os.getenv('DATABASE')
-username = os.getenv('USERNAME')
+username = os.getenv('EMAIL')
 password = os.getenv('PASSWORD')
 driver = os.getenv('DRIVER')
 db_conn_str = f'Driver={driver};Server=tcp:{server},1433;Database={database};Uid={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryPassword'
-
-ph = PasswordHasher()
 
 def derive_key(password, salt):
     kdf_salt = salt.encode()
@@ -50,19 +51,19 @@ def decrypt_data(salt_hex, nonce_hex, ciphertext_hex, tag_hex, master_password):
     decrypted_data = cipher.decrypt_and_verify(ciphertext, tag)
     return decrypted_data.decode()
 
-def create_user(username, password):
+def create_user(email, password):
     db_conn = pyodbc.connect(db_conn_str)
     cursor = db_conn.cursor()
     hashed_password = hash_password(password)
-    cursor.execute("INSERT INTO Users (username, password) VALUES (?, ?)", (username, hashed_password))
+    cursor.execute("INSERT INTO Users (email, passwordhash) VALUES (?, ?)", (email, hashed_password))
     db_conn.commit()
     db_conn.close()
 
-def get_user(username):
+def get_user(email):
     db_conn = pyodbc.connect(db_conn_str)
     cursor = db_conn.cursor()
     try:
-        cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+        cursor.execute("SELECT * FROM users WHERE email=?", (email,))
         user = cursor.fetchone()
         db_conn.close()
         return user
@@ -74,12 +75,12 @@ def sign_up():
     email = request.json['email']
     master_password = request.json['password']
 
-    if not username or not master_password:
+    if not email or not master_password:
         return jsonify({'error': 'Email and password are required.'}), 400
     if get_user(email):
         return jsonify(message='Email already exists.'), 400
     
-    create_user(username, master_password)
+    create_user(email, master_password)
     return jsonify(message='User registered successfully.'), 201
 
 @app.route('/login', methods=['POST'])
