@@ -1,66 +1,102 @@
 from flask import Flask, request, jsonify
+import pyodbc
+import os
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
+from Crypto.Protocol.KDF import PBKDF2
+from argon2 import PasswordHasher
 
 app = Flask(__name__)
 
-# DATABASE = 'password_manager.db'
-# SECRET_KEY = b'your-secret-key'  # Generate a secure secret key and keep it secret!
+server = os.getenv('SERVER')
+database = os.getenv('DATABASE')
+username = os.getenv('USERNAME')
+password = os.getenv('PASSWORD')
+driver = os.getenv('DRIVER')
+db_conn_str = f'Driver={driver};Server=tcp:{server},1433;Database={database};Uid={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;Authentication=ActiveDirectoryPassword'
 
-# def encrypt_password(password):
-#     fernet = Fernet(base64.urlsafe_b64encode(SECRET_KEY))
-#     encrypted_password = fernet.encrypt(password.encode())
-#     return encrypted_password.decode()
+ph = PasswordHasher()
 
-# def decrypt_password(encrypted_password):
-#     fernet = Fernet(base64.urlsafe_b64encode(SECRET_KEY))
-#     decrypted_password = fernet.decrypt(encrypted_password.encode())
-#     return decrypted_password.decode()
+def derive_key(password, salt):
+    kdf_salt = salt.encode()
+    key = PBKDF2(password, kdf_salt, dkLen=32, count=100000)
+    return key
 
-# def create_user(username, password):
-#     conn = sqlite3.connect(DATABASE)
-#     cursor = conn.cursor()
-#     hashed_password = generate_password_hash(password)
-#     encrypted_password = encrypt_password(password)
-#     cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, encrypted_password))
-#     conn.commit()
-#     conn.close()
+def hash_password(password):
+    return ph.hash(password)
 
-# def get_user(username):
-#     conn = sqlite3.connect(DATABASE)
-#     cursor = conn.cursor()
-#     cursor.execute("SELECT * FROM users WHERE username=?", (username,))
-#     user = cursor.fetchone()
-#     conn.close()
-#     return user
+def verify_password(hash, password):
+    try:
+        ph.verify(hash, password)
+        return True
+    except:
+        return False
 
-# @app.route('/login', methods=['POST'])
-# def login():
-#     username = request.json['username']
-#     password = request.json['password']
+def encrypt_data(account_data, master_password):
+    salt = get_random_bytes(16)
+    key = derive_key(master_password, salt)
+    cipher = AES.new(key, AES.MODE_GCM)
+    nonce = cipher.nonce
+    ciphertext, tag = cipher.encrypt_and_digest(account_data.encode())
+    return salt.hex(), nonce.hex(), ciphertext.hex(), tag.hex()
+
+def decrypt_data(salt_hex, nonce_hex, ciphertext_hex, tag_hex, master_password):
+    salt = bytes.fromhex(salt_hex)
+    nonce = bytes.fromhex(nonce_hex)
+    ciphertext = bytes.fromhex(ciphertext_hex)
+    tag = bytes.fromhex(tag_hex)
+    key = derive_key(master_password, salt)
+    cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
+    decrypted_data = cipher.decrypt_and_verify(ciphertext, tag)
+    return decrypted_data.decode()
+
+def create_user(username, password):
+    db_conn = pyodbc.connect(db_conn_str)
+    cursor = db_conn.cursor()
+    hashed_password = hash_password(password)
+    cursor.execute("INSERT INTO Users (username, password) VALUES (?, ?)", (username, hashed_password))
+    db_conn.commit()
+    db_conn.close()
+
+def get_user(username):
+    db_conn = pyodbc.connect(db_conn_str)
+    cursor = db_conn.cursor()
+    try:
+        cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+        user = cursor.fetchone()
+        db_conn.close()
+        return user
+    except:
+        return False
+
+@app.route('/sign-up', methods=['POST'])
+def sign_up():
+    email = request.json['email']
+    master_password = request.json['password']
+
+    if not username or not master_password:
+        return jsonify({'error': 'Email and password are required.'}), 400
+    if get_user(email):
+        return jsonify(message='Email already exists.'), 400
     
-#     user = get_user(username)
-    
-#     if user and check_password_hash(user[2], password):
-#         decrypted_password = decrypt_password(user[2])
-#         if decrypted_password == password:
-#             return jsonify(message='Login successful'), 200
-    
-#     return jsonify(message='Invalid username or password'), 401
+    create_user(username, master_password)
+    return jsonify(message='User registered successfully.'), 201
 
-@app.route('/register', methods=['POST'])
-def register():
-    username = request.json['username']
-    password = request.json['password']
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.json['email']
+    master_password = request.json['password']
     
-    # if get_user(username):
-    #     return jsonify(message='Username already exists'), 400
+    if not email or not master_password:
+        return jsonify({'error': 'Email and password are required.'}), 400
+    if user := get_user(email) == False:
+        return jsonify({'error': 'User not found.'}), 400
     
-    # create_user(username, password)
-    # return jsonify(message='User registered successfully'), 201
-    return jsonify(message='Successful connection between React and Flask'), 200
-
-@app.route('/test')
-def test():
-    return jsonify(message='Yay!'), 200
+    hash_password = user[2]
+    if verify_password(hash_password, password):
+        return jsonify({'message': 'Login successful.'}), 200
+    
+    return jsonify({'error': 'Invalid credentials.'}), 40
 
 if __name__ == '__main__':
     app.run(debug=True)
