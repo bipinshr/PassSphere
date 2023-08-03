@@ -1,51 +1,84 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./PasswordVault.css";
+import Axios from "axios";
 
 function PasswordVault() {
-  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [site, setSite] = useState("");
-  const [passwordsArray, setPasswordsArray] = useState([]);
+  const [account, setAccount] = useState("");
+  const [website, setWebsite] = useState("");
+  const [Listpasswords, setListPasswords] = useState([]);
 
-  const handleAddClick = () => {
-    if (userName && password && site) {
-      const newPasswordEntry = {
-        userName: userName,
-        password: password,
-        site: site,
-      };
+  useEffect(() => {
+    Axios.get("http://localhost:3001/showpassword").then((response) => {
+      setListPasswords(response.data);
+    });
+  }, []);
 
-      // Add the new entry to the passwordsArray
-      setPasswordsArray([...passwordsArray, newPasswordEntry]);
+  const addPassword = () => {
+    Axios.post("http://localhost:3001/addpassword", { website: website, password: password, account: account });
+  };
 
-      // Clear the input fields
-      setUserName("");
-      setPassword("");
-      setSite("");
-    }
+  const decrypt_password = (encryption) => {
+    Axios.post("http://localhost:3001/decryptpassword", { password: encryption.password, iv: encryption.iv }).then(
+      (response) => {
+        setListPasswords(
+          Listpasswords.map((val) => {
+            return val.id === encryption.id
+              ? { id: val.id, password: val.password, account: response.data, iv: val.iv }
+              : val;
+          })
+        );
+      }
+    );
   };
 
   return (
-    <div className="passCon">
-      <h1>This is password vault</h1>
-      <div>
-        <input type="text" placeholder="USERNAME" value={userName} onChange={(e) => setUserName(e.target.value)} />
-        <input type="text" placeholder="PASSWORD" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <input type="text" placeholder="WEBSITE" value={site} onChange={(e) => setSite(e.target.value)} />
-        <button onClick={handleAddClick}>Add</button>
+    <div>
+      <div className="addPass">
+        <div className="addingPassword">
+          <input
+            type="text"
+            placeholder="Eg.Netflix, Facebook"
+            onChange={(event) => {
+              setWebsite(event.target.value);
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Eg. Username098"
+            onChange={(event) => {
+              setAccount(event.target.value);
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Eg. Password123$"
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+          />
+          <button onClick={addPassword}> Add Password</button>
+        </div>
       </div>
 
-      {/* Display the passwordsArray */}
-      <div>
-        <h2>Password Entries:</h2>
-        <ul>
-          {passwordsArray.map((entry, index) => (
-            <li key={index}>
-              <strong>Site:</strong> {entry.site}, <strong>Username:</strong> {entry.userName},{" "}
-              <strong>Password:</strong> {entry.password}
-            </li>
-          ))}
-        </ul>
+      <div className="headName">
+        <h1>My Passwords</h1>
+      </div>
+
+      <div className="PasswordList">
+        {Listpasswords.map((val, key) => {
+          return (
+            <div
+              className="passwords"
+              onClick={() => {
+                decrypt_password({ password: val.password, iv: val.iv, id: val.id });
+              }}
+              key={key}
+            >
+              <h3>{val.account}</h3>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
