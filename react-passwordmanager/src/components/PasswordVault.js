@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./PasswordVault.css";
 import Axios from "axios";
 import PasswordBox from "./PasswordBox";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function PasswordVault() {
   const [password, setPassword] = useState("");
@@ -9,7 +11,6 @@ function PasswordVault() {
   const [website, setWebsite] = useState("");
   const [Listpasswords, setListPasswords] = useState([]);
   const [decryptedPasswords, setDecryptedPasswords] = useState({});
-  const [message, setMessage] = useState("");
   const [isDecrypting, setIsDecrypting] = useState(false);
 
   useEffect(() => {
@@ -20,7 +21,15 @@ function PasswordVault() {
 
   const addPassword = () => {
     if (!website || !account || !password) {
-      setMessage("All fields are required");
+      // Show the error message as a toast notification
+      toast.error("All fields are required", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
 
@@ -30,19 +39,41 @@ function PasswordVault() {
           // Fetch the updated password list after adding the new password
           Axios.get("http://localhost:3001/showpassword").then((response) => {
             setListPasswords(response.data);
-            setMessage("Password added successfully");
             setWebsite("");
             setAccount("");
             setPassword("");
             setDecryptedPasswords({}); // Clear decrypted passwords
+            // Show the success message as a toast notification
+            toast.success("Password added successfully", {
+              position: "bottom-right",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
           });
         } else {
-          setMessage("Failed to add password. Please try again.");
+          toast.error("Failed to add password. Please try again.", {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         }
       })
       .catch((error) => {
         console.error("Error adding password:", error);
-        setMessage("Failed to add password. Please try again.");
+        toast.error("Failed to add password. Please try again.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       });
   };
 
@@ -54,6 +85,14 @@ function PasswordVault() {
       })
       .catch((error) => {
         console.error("Error deleting password:", error);
+        toast.error("Failed to delete password. Please try again.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       });
   };
 
@@ -75,8 +114,17 @@ function PasswordVault() {
       .catch((error) => {
         console.error("Error decrypting password:", error);
         setIsDecrypting(false);
+        toast.error("Failed to decrypt password. Please try again.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       });
   };
+
   const toggleDecryptedPassword = (id) => {
     setDecryptedPasswords((prevState) => ({
       ...prevState,
@@ -112,9 +160,10 @@ function PasswordVault() {
               setPassword(event.target.value);
             }}
           />
-          <button onClick={addPassword}> Add Password</button>
+          <button className="btn--add" onClick={addPassword}>
+            Add Password
+          </button>
         </div>
-        {message && <p>{message}</p>} {/* Display the message if it is not empty */}
       </div>
 
       <div className="headName">
@@ -128,6 +177,9 @@ function PasswordVault() {
         decryptPassword={decryptPassword}
         onDelete={deletePassword}
       />
+
+      {/* Add the ToastContainer at the bottom of the component */}
+      <ToastContainer />
     </div>
   );
 }
