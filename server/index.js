@@ -14,13 +14,24 @@ const db = mysql.createConnection({
   database: "PasswordManager",
 });
 
+app.post("/deletepassword", (req, res) => {
+  const { id } = req.body;
+  db.query("DELETE FROM passwords WHERE id=?", [id], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send("Success");
+    }
+  });
+});
+
 app.post("/addpassword", (req, res) => {
-  const { website, account, password } = req.body;
+  const { Website, account, password } = req.body;
   const encryption_password = encrypt(password);
 
   db.query(
     "INSERT INTO passwords (Website,account, password, iv) VALUES (?,?, ?, ?)",
-    [website, account, encryption_password.password, encryption_password.iv],
+    [Website, account, encryption_password.password, encryption_password.iv],
     (err, result) => {
       if (err) {
         console.log(err);

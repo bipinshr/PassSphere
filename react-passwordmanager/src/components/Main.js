@@ -31,12 +31,14 @@ function Main() {
                 label="Plans starting from only $9.99/year"
                 path="/sign-up"
                 info={
-                  <ul>
-                    <li>Store a maximum of first 10 account passwords for free</li>
-                    <li>Start your free 30-day trial period</li>
-                    <li>Only pay for the features that you use</li>
-                    <li>Business and personal plans available</li>
-                  </ul>
+                  <div>
+                    <ul>
+                      <li>Store a maximum of first 10 account passwords for free</li>
+                      <li>Start your free 30-day trial period</li>
+                      <li>Only pay for the features that you use</li>
+                      <li>Business and personal plans available</li>
+                    </ul>
+                  </div>
                 }
               />
               <CardItem
@@ -45,10 +47,12 @@ function Main() {
                 label="AES-256 bit Encryption algorithm"
                 path="/sign-up"
                 info={
-                  <ul>
-                    <li>Never worry about yout account security</li>
-                    <li>Best encryption algorithm to store all your passwords</li>
-                  </ul>
+                  <div>
+                    <ul>
+                      <li>Never worry about yout account security</li>
+                      <li>Best encryption algorithm to store all your passwords</li>
+                    </ul>
+                  </div>
                 }
               />
             </ul>
@@ -59,10 +63,12 @@ function Main() {
                 label="PassGen"
                 path="/sign-up"
                 info={
-                  <ul>
-                    <li>Randomly generate a unique password for your new accounts</li>
-                    <li>Regenerate unique passwords until satisfied</li>
-                  </ul>
+                  <div>
+                    <ul>
+                      <li>Randomly generate a unique password for your new accounts</li>
+                      <li>Regenerate unique passwords until satisfied</li>
+                    </ul>
+                  </div>
                 }
               />
               <CardItem
@@ -71,10 +77,12 @@ function Main() {
                 label="Autofill"
                 path="/sign-up"
                 info={
-                  <ul>
-                    <li>Add a Chrome extension to enable password autofill</li>
-                    <li>Automatically log in to your accounts wiht the autofill feature</li>
-                  </ul>
+                  <div>
+                    <ul>
+                      <li>Add a Chrome extension to enable password autofill</li>
+                      <li>Automatically log in to your accounts wiht the autofill feature</li>
+                    </ul>
+                  </div>
                 }
               />
             </ul>
