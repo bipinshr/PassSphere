@@ -1,12 +1,9 @@
-import React from 'react';
+import React from "react";
 //import CardItem from './CardItem';
-import './Card.css';
+import "./Card.css";
 
 function Card() {
-    return (
-        <>
-        </>
-    );
+  return <></>;
 }
 
 export default Card;

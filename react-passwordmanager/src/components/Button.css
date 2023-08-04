@@ -18,10 +18,14 @@
 
 .btn--outline {
   background-color: transparent;
-  color: #fff;
+  color: rgb(250, 73, 3);
   padding: 8px 20px;
   border: 1px solid var(--primary);
   transition: all 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 20px;
 }
 
 .btn--medium {
@@ -39,4 +43,16 @@
   background: #fff;
   color: #242424;
   transition: all 0.3s ease-out;
+}
+
+.btnLogin {
+  background-color: transparent;
+  color: rgb(250, 73, 3);
+  padding: 8px 20px;
+  border: 1px solid var(--primary);
+  transition: all 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 20px;
 }

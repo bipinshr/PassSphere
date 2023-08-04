@@ -17,9 +17,9 @@ function PasswordVault() {
   const idOfUser = getIdOfUser();
   const [id, setId] = useState(idOfUser);
 
+  //show password according to userid
   useEffect(() => {
     if (isAuthenticated && user && id !== null) {
-      // Fetch passwords for the specific user using the state id
       Axios.get(`http://localhost:3001/showpassword/${id}`).then((response) => {
         setListPasswords(response.data);
         // console.log("hello", response.data);
@@ -43,14 +43,14 @@ function PasswordVault() {
 
     // Define the userData object
     const userData = {
-      userid: user.sub, // Assuming you have the user's sub (subject) from Auth0
+      userid: user.sub, // sub from Auth0
       username: user.name,
       email: user.email,
       picture: user.picture,
       nickname: user.nickname || null,
     };
 
-    // First, submit user data to the server
+    // Submmitting the data
     Axios.post("http://localhost:3001/submitUserData", userData)
       .then(() => {
         console.log("User data successfully submitted to the server.");
@@ -61,12 +61,13 @@ function PasswordVault() {
         console.log("Userid from database:", useridFromDatabase);
         setId(useridFromDatabase);
         userData.userid = useridFromDatabase;
-        // Now, add the password with the retrieved userid
+        // Add password and get the userid
         return Axios.post("http://localhost:3001/addpassword", {
           Website: website,
           password: password,
           account: account,
-          userid: useridFromDatabase, // Use the retrieved userid
+          // This is the userid retrived from the database
+          userid: useridFromDatabase,
         });
       })
       .then((response) => {
@@ -77,8 +78,7 @@ function PasswordVault() {
             setWebsite("");
             setAccount("");
             setPassword("");
-            setDecryptedPasswords({}); // Clear decrypted passwords
-            // Show the success message as a toast notification
+            setDecryptedPasswords({});
             toast.success("Password added successfully", {
               position: "bottom-right",
               autoClose: 3000,

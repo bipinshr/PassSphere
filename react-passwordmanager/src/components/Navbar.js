@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "./Button";
+// import { Button } from "./Button";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -22,20 +22,18 @@ function Navbar() {
       setButton(true);
     }
   };
-
+  //For window resize
   useEffect(() => {
     showButton();
   }, []);
 
   useEffect(() => {
-    // Attach the event listener for the "resize" event
     window.addEventListener("resize", showButton);
 
-    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", showButton);
     };
-  }, []); // Empty dependency array, runs only once after mount
+  }, []);
 
   return (
     <>
@@ -65,14 +63,14 @@ function Navbar() {
             </li>
             <li className="nav-item">
               {isAuthenticated ? (
-                <button className="btn--outline" onClick={() => logout()}>
+                <button className="custom-button" onClick={() => logout()}>
                   Logout
                 </button>
               ) : (
                 button && (
-                  <Button className="btn--outline" onClick={() => loginWithRedirect()}>
+                  <button className="custom-button" onClick={() => loginWithRedirect()}>
                     Login
-                  </Button>
+                  </button>
                 )
               )}
             </li>

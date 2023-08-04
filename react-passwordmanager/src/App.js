@@ -77,7 +77,9 @@ function Profile() {
           </div>
 
           <div className="main-btns">
-            <Link to="/page">page</Link>
+            <Link className="showpassword" to="/page">
+              Open Password Vault
+            </Link>
           </div>
         </div>
         {/* <article style={{ color: "white" }}>{JSON.stringify(user)}</article> */}
@@ -91,11 +93,7 @@ function App() {
   const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
   return (
-    <Auth0Provider
-      domain={domain}
-      clientId={clientId}
-      redirectUri={window.location.origin} // Use redirectUri instead of authorizationParams
-    >
+    <Auth0Provider domain={domain} clientId={clientId} redirectUri={window.location.origin}>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />

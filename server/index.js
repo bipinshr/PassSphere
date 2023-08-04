@@ -8,6 +8,7 @@ const { Auth0Client } = require("@auth0/auth0-spa-js");
 app.use(cors());
 app.use(express.json());
 
+//setting up database connection
 const db = mysql.createConnection({
   user: "PassSphere",
   host: "passsphere.mysql.database.azure.com",

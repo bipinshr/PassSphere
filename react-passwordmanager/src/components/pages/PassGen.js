@@ -10,6 +10,7 @@ function PassGen() {
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [isButtonClicked, setIsButtonClicked] = useState(false);
 
+  //Get the password object from the api
   useEffect(() => {
     if (isButtonClicked) {
       fetch(`https://api.api-ninjas.com/v1/passwordgenerator?length=${passwordLength}`, {
@@ -19,7 +20,7 @@ function PassGen() {
       })
         .then((response) => response.json())
         .then((data) => {
-          const password = data.random_password; //get the password object form api
+          const password = data.random_password; //api uses data.random_password
           setGeneratedPassword(password || ""); // Set an empty string if password is undefined
           // console.log(password);
         })
@@ -37,6 +38,7 @@ function PassGen() {
     setIsButtonClicked(true);
   };
 
+  //To copy the generated password
   const handleCopyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(generatedPassword);

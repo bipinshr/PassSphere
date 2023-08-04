@@ -156,3 +156,22 @@
     transition: 250ms;
   }
 }
+
+.custom-button {
+  background-color: rgb(250, 73, 3);
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 20px auto;
+  display: block;
+  text-align: center;
+  font-size: 16px;
+}
+
+.custom-button:hover {
+  background-color: white;
+  color: rgb(250, 73, 3);
+}
