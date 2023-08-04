@@ -4,20 +4,28 @@ import Axios from "axios";
 import PasswordBox from "./PasswordBox";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { useAuth0 } from "@auth0/auth0-react"; // Import the useAuth0 hook
+import { getIdOfUser } from "../userData";
 function PasswordVault() {
+  const { user, isAuthenticated } = useAuth0();
   const [password, setPassword] = useState("");
   const [account, setAccount] = useState("");
   const [website, setWebsite] = useState("");
   const [Listpasswords, setListPasswords] = useState([]);
   const [decryptedPasswords, setDecryptedPasswords] = useState({});
   const [isDecrypting, setIsDecrypting] = useState(false);
+  const idOfUser = getIdOfUser();
+  const [id, setId] = useState(idOfUser);
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/showpassword").then((response) => {
-      setListPasswords(response.data);
-    });
-  }, []);
+    if (isAuthenticated && user && id !== null) {
+      // Fetch passwords for the specific user using the state id
+      Axios.get(`http://localhost:3001/showpassword/${id}`).then((response) => {
+        setListPasswords(response.data);
+        // console.log("hello", response.data);
+      });
+    }
+  }, [isAuthenticated, user, id]);
 
   const addPassword = () => {
     if (!website || !account || !password) {
@@ -33,11 +41,38 @@ function PasswordVault() {
       return;
     }
 
-    Axios.post("http://localhost:3001/addpassword", { Website: website, password: password, account: account })
+    // Define the userData object
+    const userData = {
+      userid: user.sub, // Assuming you have the user's sub (subject) from Auth0
+      username: user.name,
+      email: user.email,
+      picture: user.picture,
+      nickname: user.nickname || null,
+    };
+
+    // First, submit user data to the server
+    Axios.post("http://localhost:3001/submitUserData", userData)
+      .then(() => {
+        console.log("User data successfully submitted to the server.");
+        return Axios.get(`http://localhost:3001/getInsertedUserId/${userData.email}`);
+      })
+      .then((userIdResponse) => {
+        const useridFromDatabase = userIdResponse.data.userid;
+        console.log("Userid from database:", useridFromDatabase);
+        setId(useridFromDatabase);
+        userData.userid = useridFromDatabase;
+        // Now, add the password with the retrieved userid
+        return Axios.post("http://localhost:3001/addpassword", {
+          Website: website,
+          password: password,
+          account: account,
+          userid: useridFromDatabase, // Use the retrieved userid
+        });
+      })
       .then((response) => {
         if (response.data === "Success") {
           // Fetch the updated password list after adding the new password
-          Axios.get("http://localhost:3001/showpassword").then((response) => {
+          Axios.get(`http://localhost:3001/showpassword/${id}`).then((response) => {
             setListPasswords(response.data);
             setWebsite("");
             setAccount("");
@@ -103,7 +138,10 @@ function PasswordVault() {
 
     setIsDecrypting(true);
 
-    Axios.post("http://localhost:3001/decryptpassword", { password: encryption.password, iv: encryption.iv })
+    Axios.post("http://localhost:3001/decryptpassword", {
+      password: encryption.password,
+      iv: encryption.iv,
+    })
       .then((response) => {
         setDecryptedPasswords((prevState) => ({
           ...prevState,

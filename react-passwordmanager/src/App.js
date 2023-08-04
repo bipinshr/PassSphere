@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./components/pages/Home";
 import "./components/Profile.css";
@@ -8,8 +8,45 @@ import PassGen from "./components/pages/PassGen";
 import PasswordPage from "./components/pages/PasswordPage";
 import { Link } from "react-router-dom";
 import Navbar from "./components/Navbar";
+// import axios from "axios";
+import axios from "axios";
+import { setIdOfUser } from "./userData";
+
 function Profile() {
   const { user, isAuthenticated, isLoading } = useAuth0();
+  const [isDataSubmitted, setIsDataSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
+    if (user && isAuthenticated && !isDataSubmitted) {
+      const userData = {
+        userid: user.sub,
+        username: user.name,
+        email: user.email,
+        picture: user.picture,
+        nickname: user.nickname || null,
+      };
+
+      axios
+        .post("http://localhost:3001/submitUserData", userData)
+        .then(() => {
+          console.log("User data successfully submitted to the server.");
+          return axios.get(`http://localhost:3001/getInsertedUserId/${userData.email}`);
+        })
+        .then((userIdResponse) => {
+          const useridFromDatabase = userIdResponse.data.userid;
+          console.log("Userid from database:", useridFromDatabase);
+          setIdOfUser(useridFromDatabase);
+          setIsDataSubmitted(true);
+        })
+        .catch((error) => {
+          console.log("Error submitting user data:", error);
+        });
+    }
+  }, [user, isAuthenticated, isLoading, isDataSubmitted]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -43,6 +80,7 @@ function Profile() {
             <Link to="/page">page</Link>
           </div>
         </div>
+        {/* <article style={{ color: "white" }}>{JSON.stringify(user)}</article> */}
       </div>
     </>
   );

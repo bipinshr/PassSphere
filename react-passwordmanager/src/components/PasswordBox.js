@@ -47,7 +47,9 @@ function PasswordBox(props) {
             >
               {decryptedPasswords[val.id] ? "Hide Password" : "Show Password"}
             </button>
-            <button className="btn--delete-btn" onClick={() => handleDelete(val.id)}>Delete</button>
+            <button className="btn--delete-btn" onClick={() => handleDelete(val.id)}>
+              Delete
+            </button>
           </div>
         </div>
       ))}
