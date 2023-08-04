@@ -8,6 +8,7 @@ video {
 
 .Main-container {
   background-color: black;
+  background-image: url(../images/bg.jpg);
   /*background-image: url("../images/jarvis.jpeg") center center/cover no repeat;*/
   height: 100%;
   width: 100%;
@@ -24,6 +25,27 @@ video {
   margin-top: 100px;
   align-items: center;
   justify-content: center;
+}
+
+.main-design {
+  width: 90%;
+  height: 30em;
+  margin-top: 5em;
+  margin-left: 6em;
+  background-image: url(../images/bg.jpg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.5s;
+  border-radius: 0.25em;
+  cursor: pointer;
+}
+.main-design:hover {
+  transform: scale(1.25);
+}
+
+.main-design h1 {
+  color: whitesmoke;
 }
 
 .Main-container > p {

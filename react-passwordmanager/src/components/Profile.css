@@ -1,0 +1,68 @@
+/* Your CSS styles here */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "CustomFont";
+  background-color: #f0f0f0;
+}
+
+@font-face {
+  font-family: "CustomFont";
+  src: url("../fonts/RolexLight.woff2");
+}
+
+.cards-container {
+  display: flex;
+  background-image: url(../images/bg.jpg);
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.cards-wrapper {
+  text-align: center;
+  margin-top: 18em;
+  margin-bottom: 3em;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 100px;
+  border-radius: 30px;
+}
+
+.cards-wrapper h2 {
+  margin: 20px;
+  margin-left: 1.5em;
+  color: #333;
+  align-items: center;
+  justify-content: center;
+}
+
+.cards-wrapper p {
+  color: #666;
+  margin-top: 6em;
+  justify-content: center;
+  align-items: center;
+  margin-left: -15.5em;
+}
+
+.cards-wrapper .profile-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px; /* Updated margin to center the image and create space below it */
+  position: relative;
+}
+
+.cards-wrapper .profile-picture img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border-color: black;
+  border-style: groove;
+  object-fit: cover;
+  position: absolute;
+  top: -125px; /* Position the image on top of the card */
+  left: 53%; /* Move the image to the center horizontally */
+  transform: translateX(-50%); /* Center the image using transform */
+  z-index: 1;
+}

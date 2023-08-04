@@ -2,23 +2,16 @@ import React from "react";
 import "../App.css";
 //import { Button } from "./Button";
 import "./Main.css";
-import Navbar from "./Navbar";
 import CardItem from "./CardItem";
 import "./Card.css";
-
-import { Link } from "react-router-dom";
+import Navbar from "./Navbar";
 
 function Main() {
   return (
     <div className="Main-container">
       <Navbar />
-      <h1> PassSphere: Password Manager</h1>
-      <p>One password for all your accounts</p>
-      <div className="main-btns">
-        <Link to="/passGen">PassGen</Link>
-      </div>
-      <div className="main-btns">
-        <Link to="/page">page</Link>
+      <div className="main-design">
+        <h1>WELCOME to PassSphere!!! Password Manager Application</h1>
       </div>
       <div className="cards">
         <h1>Why PassSphere?</h1>
