@@ -10,10 +10,10 @@ app.use(express.json());
 
 //setting up database connection
 const db = mysql.createConnection({
-  user: "PassSphere",
-  host: "passsphere.mysql.database.azure.com",
-  password: "P@ssSphere123",
-  database: "auth0_user",
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 // Auth0 configuration
