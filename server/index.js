@@ -9,6 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 //setting up database connection
+//using eve to protect the data
 const db = mysql.createConnection({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
